@@ -1,0 +1,7 @@
+setup.py
+rovnoui/__init__.py
+rovnoui.egg-info/PKG-INFO
+rovnoui.egg-info/SOURCES.txt
+rovnoui.egg-info/dependency_links.txt
+rovnoui.egg-info/requires.txt
+rovnoui.egg-info/top_level.txt
