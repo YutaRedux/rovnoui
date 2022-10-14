@@ -8,6 +8,9 @@ import ctypes
 ROVNOUI_VERSION = '0.4.3'
 
 
+_posix = True if oprsys() != 'Windows' else False
+
+
 class Widget():
     """Base class for any widget."""
     
@@ -35,8 +38,9 @@ class Screen():
         self.console = Console()
         self.layout = layout
         self.widget_separator = widget_separator
-        self.ci = _CursorInfo()
-        self.ci_handle = ctypes.windll.kernel32.GetStdHandle(-11)
+        if _posix:
+            self.ci = _CursorInfo()
+            self.ci_handle = ctypes.windll.kernel32.GetStdHandle(-11)
 
     def clear(self) -> None:
         """Fully clear the screen, like the cls command on Windows."""
@@ -50,15 +54,17 @@ class Screen():
 
     def hide_cursor(self) -> None:
         """Hide the terminal cursor."""
-        ctypes.windll.kernel32.GetConsoleCursorInfo(self.ci_handle, ctypes.byref(self.ci))
-        self.ci.visible = False
-        ctypes.windll.kernel32.SetConsoleCursorInfo(self.ci_handle, ctypes.byref(self.ci))
+        if not _posix:
+            ctypes.windll.kernel32.GetConsoleCursorInfo(self.ci_handle, ctypes.byref(self.ci))
+            self.ci.visible = False
+            ctypes.windll.kernel32.SetConsoleCursorInfo(self.ci_handle, ctypes.byref(self.ci))
 
     def show_cursor(self) -> None:
         """Show the terminal cursor."""
-        ctypes.windll.kernel32.GetConsoleCursorInfo(self.ci_handle, ctypes.byref(self.ci))
-        self.ci.visible = True
-        ctypes.windll.kernel32.SetConsoleCursorInfo(self.ci_handle, ctypes.byref(self.ci))
+        if not _posix:
+            ctypes.windll.kernel32.GetConsoleCursorInfo(self.ci_handle, ctypes.byref(self.ci))
+            self.ci.visible = True
+            ctypes.windll.kernel32.SetConsoleCursorInfo(self.ci_handle, ctypes.byref(self.ci))
 
     def print(self, text) -> None:
         """Print any Rich renderable to the terminal."""
